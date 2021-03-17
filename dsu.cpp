@@ -1,5 +1,6 @@
 // union by size
 
+// sort edge list
 struct dsu{
 	int n;
 	vector<int> siz, link;
@@ -8,6 +9,7 @@ struct dsu{
 	void init(int nodes){
 		n = nodes;
 		siz.resize(n);
+		link.resize(n);
 		adj.resize(n);
 		for(int i = 0; i < n; i++){
 			link[i] = i;
@@ -22,11 +24,11 @@ struct dsu{
 		return link[x] = find_set(link[x]);
 	}
 
-	void unite_sets(int a, int b){
+	int unite_sets(int a, int b){
 		a = find_set(a);
 		b = find_set(b);
 		if(a == b){
-			return;
+			return 0;
 		}
 		adj[a].push_back(b);
 		adj[b].push_back(a);
@@ -35,6 +37,8 @@ struct dsu{
 		}
 		siz[a] += siz[b];
 		link[b] = a;
+		return 1;
 	}
 
 };
+
