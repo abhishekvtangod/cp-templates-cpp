@@ -44,10 +44,50 @@ struct number_theory{
 		return gcd(y, x%y);
 	}
 
-}
+	int isprime(int n){
+		if(n <= 1){
+			return 0;
+		} else if(n <= 3){
+			return 1;
+		}
+		if(n%2 == 0 || n%3 == 0){
+			return 0;
+		}
+		for(int i = 5; i * i <= n; i+=6){
+			if(n%i == 0 || n%(i+2) == 0){
+				return 0;
+			}
+		}
 
+		return 1;
+	}
+
+	int prime[(int)1e8];
+	void sieve_of_eratosthenes(int n){
+		for(int i = 0; i <= n; i++){
+			prime[i] = 1;
+		}
+		prime[1] = 0;
+		for(int i = 2; i*i <= n; i++){
+			if(prime[i]){
+				for(int j = i*i; j <= n; j += i){
+					prime[j] = 0;
+				}
+			}
+		}
+	}
+
+};
+number_theory nt;
 
 void solve(){
+	int a, b;
+	cin >> a >> b;
+	cout << nt.gcd(a, b) << endl;
+	nt.sieve_of_eratosthenes(50);
+	for(int i = 0; i < 40; i++){
+		cout << i << " " << nt.prime[i] << endl;
+	}
 
 }
 
