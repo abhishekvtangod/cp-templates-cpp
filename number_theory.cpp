@@ -44,6 +44,12 @@ struct number_theory{
 		}
 		return gcd(x, y%x);
 	}
+	// int gcd(int x, int y){
+	// 	if(!y){
+	// 		return x;
+	// 	}
+	// 	return gcd(y, x%y);
+	// }
 
 	int isprime(int n){
 		if(n <= 1){
@@ -137,7 +143,6 @@ struct number_theory{
 number_theory nt;
 
 void solve(){
-	
 
 }
 
