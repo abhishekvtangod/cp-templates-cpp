@@ -34,14 +34,15 @@ void debug_out(Head H, Tail... T) {
 #endif
 
 struct number_theory{
+	// gcd(x, y) = gcd(x, y%x);
 	int gcd(int x, int y){
+		if(x > y){
+			return gcd(y, x);
+		}
 		if(!x){
 			return y;
-		} else if(!y){
-			return x;
 		}
-
-		return gcd(y, x%y);
+		return gcd(x, y%x);
 	}
 
 	int isprime(int n){
@@ -77,17 +78,66 @@ struct number_theory{
 		}
 	}
 
+	vector<int> primesList;
+	void genPrimes(int n){
+		sieve_of_eratosthenes(n);
+		for(int i = 2; i <= n; i++){
+			if(prime[i]){
+				primesList.push_back(i);
+			}
+		}
+	}
+
+	vector<int> fac;
+	void pFactors(int n){
+		genPrimes(n);
+		for(int i = 0; primesList[i]*primesList[i] <= n; i++){
+			while(n%primesList[i] == 0){
+				fac.push_back(primesList[i]);
+				n/=primesList[i];
+			}
+		}
+		if(n > 1){
+			fac.push_back(n);
+		}
+		// sort(fac.begin(), fac.end());
+	}
+
+
+
+	vector<int> divs;
+	void getDivs(int n){
+		for(int i = 1; i*i <= n ; i++){
+			if(n%i==0){
+				divs.push_back(i);
+				if(i != n/i){
+					divs.push_back(n/i);
+				}
+			}
+		}
+	}
+
+	vector<int> pf;
+	void getPrimeFactors(int n){
+		for(int i = 2; i*i <= n; i++){
+			while(n%i==0){
+				pf.push_back(i);
+				n/=i;
+			}
+		}
+		if(n!=1){
+			pf.push_back(n);
+		}
+	}
+
+
+
+
 };
 number_theory nt;
 
 void solve(){
-	int a, b;
-	cin >> a >> b;
-	cout << nt.gcd(a, b) << endl;
-	nt.sieve_of_eratosthenes(50);
-	for(int i = 0; i < 40; i++){
-		cout << i << " " << nt.prime[i] << endl;
-	}
+	
 
 }
 
