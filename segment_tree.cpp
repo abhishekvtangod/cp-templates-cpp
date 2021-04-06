@@ -34,133 +34,149 @@ void debug_out(Head H, Tail... T) {
 #endif
 
 // associative property
-
-struct segtree{
-	int n;
-	vector<int> tree, lazy;
-
-	void init(int sz){
-		n = sz;
-		tree.resize(4*n, 0);
-		lazy.resize(4*n, 0);
+struct node{
+	int val;
+	node(){
+		val = 0;
+	}
+	node(int _val){
+		val = _val;
 	}
 
-	// a -> input array, idx -> index of the current vertex
+	node oper(node& other_node){
+		return node(val + other_node.val);
+	}
+
+	node lazy_oper(node& other_node, int size){
+		return node(val + other_node.val * size);
+	}
+
+};
+
+
+template<typename node_t>
+struct segtree{
+	int n;
+	vector<node_t> tree, lazy;
+
+
+	segtree(int _n){
+		n = _n;
+		tree.resize(4 * n);
+		lazy.resize(4 * n);
+	}
+
+	// v -> input array, ti -> index of the current vertex in segment tree
 	// 1, 0, n-1 (root node starts from index 1)
-	void build(int idx, int tl, int tr, vector<int> a){
+	void build(vector<int> v){
+		build(1, 0, n-1, v);
+	}
+
+	void build(int ti, int tl, int tr, vector<int> v){
 		if(tl == tr){
-			tree[idx] = a[tl];
+			tree[ti] = v[tl];
 			return;
 		}
 		int tm = tl + (tr - tl) / 2;
-		build(idx * 2, tl, tm, a);
-		build(idx * 2 + 1, tm + 1, tr, a);
-		tree[idx] = tree[idx * 2] + tree[idx * 2 + 1];
+		build(ti * 2, tl, tm, v);
+		build(ti * 2 + 1, tm + 1, tr, v);
+		// tree[ti] = tree[ti * 2] + tree[ti * 2 + 1];
+		tree[ti] = tree[ti*2].oper(tree[ti*2+1]);
 	}
 
-	void apply(int ti, int tl, int tr, int val){
-		tree[ti] += val * (tr - tl + 1);
+	void apply(int ti, int tl, int tr, node_t upd){
+		// tree[ti] += val * (tr - tl + 1);
+		tree[ti] = tree[ti].lazy_oper(upd, (tr - tl + 1));
 		if(tl != tr){ // if not leaf, make it lazy
-			lazy[ti] += val;
+			lazy[ti] = lazy[ti].lazy_oper(upd, 1);
 		}
+		lazy[ti] = node_t();
 	}
 
 	void pushdown(int ti, int tl, int tr){
-		if(lazy[ti]){
-			int tm = tr + (tr - tl) / 2;
-			apply(ti*2, tl, tm, lazy[ti]);
-			apply(ti*2+1, tm+1, tr, lazy[ti]);
-			lazy[ti] = 0; //not lazy anymore
-		}
+		if(!lazy[ti].val)return;
+
+		int tm = tr + (tr - tl) >> 1;
+		apply(ti<<1, tl, tm, lazy[ti]);
+		apply(ti<<1|1, tm+1, tr, lazy[ti]);
+		lazy[ti] = 0; //not lazy anymore
+
 	}
 
-	void r_update(int ti, int tl, int tr, int l, int r, int val){
+	// range update
+	void r_update(int l, int r, int val){
+		node_t upd(val);
+		r_update(1, 0, n-1, l, r, upd);
+	}
+	void r_update(int ti, int tl, int tr, int l, int r, node_t upd){
 		//no overlap  [l..r tl...tr l...r]
 		if(l > tr || r < tl){
 			return;
 		}
 		//complete overlap [l...tl...tr...r]
 		if(tl >= l && tr <= r){
-			apply(ti, tl, tr, val);
+			apply(ti, tl, tr, upd);
 			return;
 		}
 
 		//partial overlap
 		pushdown(ti, tl, tr); // remove lazy tag before moving down
-		int tm = tr + (tr - tl) / 2;
-		r_update(ti*2, tl, tm, l, r, val);
-		r_update(ti*2+1, tm+1, tr, l, r, val);
-		tree[ti] = tree[ti*2] + tree[ti*2+1];
+		int tm = tl + (tr - tl) / 2;
+		r_update(ti*2, tl, tm, l, r, upd);
+		r_update(ti*2+1, tm+1, tr, l, r, upd);
+		// tree[ti] = tree[ti*2] + tree[ti*2+1];
+		tree[ti] = tree[ti*2].oper(tree[ti*2+1]);
 	}
 
-	// void pt_update(int idx, int tl, int tr, int pos, int new_val){
-	// 	if(tl == pos && tr == pos){
-	// 		tree[idx] = new_val;
-	// 		return;
-	// 	}
+	int query(int l, int r){
+		node_t ans = query(1, 0, n-1, l, r);
+		return ans.val;
+	}
 
-	// 	//update point is outside node range
-	// 	// pos tl... tr pos
-	// 	if(pos < tl || pos > tr){
-	// 		return;
-	// 	}
-
-	// 	// update point is inside node range
-	// 	int tm = tl + (tr - tl)/2;	// [tl, tm] and [tm+1, tr]
-	// 	update(idx*2, tl, tm, pos, new_val);
-	// 	update(idx*2+1, tm+1, tr, pos, new_val);
-	// 	tree[idx] = tree[idx*2] + tree[idx*2+1]; // sum of left and right
-
-	// }
-
-	int query(int ti, int tl, int tr, int left, int right){
+	node_t query(int ti, int tl, int tr, int l, int r){
 		//no overlap
-		// left...right tl...tr left...right
-		if(left > tr || right < tl){
+		// l...r tl...tr l...r
+		if(l > tr || r < tl){
 			return 0;
 		}
 		// complete overlap
-		// left...tl...tr...right
-		if(left<=tl && right >= tr){
+		// l...tl...tr...r
+		if(l <= tl && r >= tr){
 			return tree[ti];
 		}
 		// partial overlap
 		pushdown(ti, tl, tr); // remove lazy tag before moving down
 		
-		int tm = tl + (tr - tl)/2;	// [tl, tm] and [tm+1, tr]
-		int ans = 0;
-		ans += query(ti*2, tl, tm, left, right);
-		ans += query(ti*2+1, tm+1, tr, left, right);
-		return ans;
+		int tm = (tl + (tr - tl) / 2);	// [tl, tm] and [tm+1, tr]
+		node_t a = query(ti*2, tl, tm, l, r);
+		node_t b = query(ti*2+1, tm+1, tr, l, r);
+		return a.oper(b);
 	}
 
 };
 
-segtree st;
 
 void solve(){
 	int n;
 	cin >> n;
+	segtree<node> st(n);
 	vector<int> v;
 	for(int i = 0; i < n; i++){
-		int tm; cin >> tm;
-		v.push_back(tm);
+		int temp;
+		cin >> temp;
+		v.push_back(temp);
 	}
-	st.init(n);
-	st.build(1, 0, n-1, v);
+	st.build(v);
+	st.r_update(1, 3, 100);
 
-	for(int i = 0; i < 4*n; i++){
-		cout << st.tree[i] << " ";
+
+	for(int i = 0; i < n; i++){
+		int temp = st.query(i, i);
+		cout << temp << " " ;
 	}
 	cout << endl;
-	cout << st.query(1, 0, n-1, 0, 4) << endl;
-	// st.update(1, 0, n-1, 4, 0);
-	// st.update(1, 0, n-1, 3, 1); 
-	for(int i = 0; i < 4*n; i++){
-		cout << st.tree[i] << " ";
-	}
-	cout << endl;
-	
+
+
 }
 
 
