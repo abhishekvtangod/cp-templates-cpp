@@ -37,11 +37,12 @@ void debug_out(Head H, Tail... T) {
 
 struct segtree{
 	int n;
-	vector<int> tree;
+	vector<int> tree, lazy;
 
 	void init(int sz){
 		n = sz;
-		tree.resize(4*n);
+		tree.resize(4*n, 0);
+		lazy.resize(4*n, 0);
 	}
 
 	// a -> input array, idx -> index of the current vertex
@@ -57,33 +58,81 @@ struct segtree{
 		tree[idx] = tree[idx * 2] + tree[idx * 2 + 1];
 	}
 
-	int query(int idx, int tl, int tr, int left, int right){
-		if(left > right){
-			return 0;
+	void apply(int ti, int tl, int tr, int val){
+		tree[ti] += val * (tr - tl + 1);
+		if(tl != tr){ // if not leaf, make it lazy
+			lazy[ti] += val;
 		}
-		if(left == tl && right == tr){
-			return tree[idx];
-		}
-		int tm = tl + (tr - tl) / 2;
-		return query(idx * 2, tl, tm, left, min(right, tm)) + query(idx * 2 + 1, tm+1, tr, max(left, tm+1), right);
-		
 	}
 
-	void update(int idx, int tl, int tr, int pos, int new_val){
-		if(tl == tr){
-			tree[idx] = new_val;
+	void pushdown(int ti, int tl, int tr){
+		if(lazy[ti]){
+			int tm = tr + (tr - tl) / 2;
+			apply(ti*2, tl, tm, lazy[ti]);
+			apply(ti*2+1, tm+1, tr, lazy[ti]);
+			lazy[ti] = 0; //not lazy anymore
+		}
+	}
+
+	void r_update(int ti, int tl, int tr, int l, int r, int val){
+		//no overlap  [l..r tl...tr l...r]
+		if(l > tr || r < tl){
 			return;
 		}
-		int tm = tl + (tr - tl) / 2;
-		if(pos <= tm){
-			update(idx * 2, tl, tm, pos, new_val);
-		} else{
-			update(idx * 2 + 1, tm + 1, tr, pos, new_val);
+		//complete overlap [l...tl...tr...r]
+		if(tl >= l && tr <= r){
+			apply(ti, tl, tr, val);
+			return;
 		}
-		tree[idx] = tree[idx*2] + tree[idx*2 + 1];
 
+		//partial overlap
+		pushdown(ti, tl, tr); // remove lazy tag before moving down
+		int tm = tr + (tr - tl) / 2;
+		r_update(ti*2, tl, tm, l, r, val);
+		r_update(ti*2+1, tm+1, tr, l, r, val);
+		tree[ti] = tree[ti*2] + tree[ti*2+1];
 	}
 
+	// void pt_update(int idx, int tl, int tr, int pos, int new_val){
+	// 	if(tl == pos && tr == pos){
+	// 		tree[idx] = new_val;
+	// 		return;
+	// 	}
+
+	// 	//update point is outside node range
+	// 	// pos tl... tr pos
+	// 	if(pos < tl || pos > tr){
+	// 		return;
+	// 	}
+
+	// 	// update point is inside node range
+	// 	int tm = tl + (tr - tl)/2;	// [tl, tm] and [tm+1, tr]
+	// 	update(idx*2, tl, tm, pos, new_val);
+	// 	update(idx*2+1, tm+1, tr, pos, new_val);
+	// 	tree[idx] = tree[idx*2] + tree[idx*2+1]; // sum of left and right
+
+	// }
+
+	int query(int ti, int tl, int tr, int left, int right){
+		//no overlap
+		// left...right tl...tr left...right
+		if(left > tr || right < tl){
+			return 0;
+		}
+		// complete overlap
+		// left...tl...tr...right
+		if(left<=tl && right >= tr){
+			return tree[ti];
+		}
+		// partial overlap
+		pushdown(ti, tl, tr); // remove lazy tag before moving down
+		
+		int tm = tl + (tr - tl)/2;	// [tl, tm] and [tm+1, tr]
+		int ans = 0;
+		ans += query(ti*2, tl, tm, left, right);
+		ans += query(ti*2+1, tm+1, tr, left, right);
+		return ans;
+	}
 
 };
 
@@ -105,8 +154,8 @@ void solve(){
 	}
 	cout << endl;
 	cout << st.query(1, 0, n-1, 0, 4) << endl;
-	st.update(1, 0, n-1, 4, 0);
-	st.update(1, 0, n-1, 3, 1); 
+	// st.update(1, 0, n-1, 4, 0);
+	// st.update(1, 0, n-1, 3, 1); 
 	for(int i = 0; i < 4*n; i++){
 		cout << st.tree[i] << " ";
 	}
