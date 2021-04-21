@@ -14,6 +14,15 @@ using namespace std;
 #define IOS ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 typedef long long int ll;
 
+template <typename A>
+void debug_out(vector<A> v){
+	cerr << "{";
+	for(auto u: v){
+		cerr << u << ", ";
+	}
+	cerr << "}" << endl;
+}
+
 void debug_out() { cerr << "]" << endl; }
 template <typename Head, typename... Tail>
 void debug_out(Head H, Tail... T) {
