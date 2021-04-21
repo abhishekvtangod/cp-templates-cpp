@@ -14,32 +14,59 @@ using namespace std;
 #define IOS ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 typedef long long int ll;
 
-template <typename A>
-void debug_out(vector<A> v){
-	cerr << "{";
-	for(auto u: v){
-		cerr << u << ", ";
-	}
-	cerr << "}" << endl;
+string to_string(const string &s){
+	return "{" + s + "}";
 }
 
-void debug_out() { cerr << "]" << endl; }
+string to_string(const char &c){
+	string s = "";
+	s += c;
+	return s;
+}
+
+template <typename A, typename B>
+string to_string(const pair<A, B> &p){
+	return "(" + to_string(p.first) + ", " + to_string(p.second) + ")";
+}
+
+template <typename A, typename B, typename C>
+string to_string(const tuple<A, B, C> &t){
+	return "(" + to_string(get<0>(t)) + ", " + to_string(get<1>(t)) + ", " + to_string(get<2>(t)) + ")";
+}
+
+template <typename A>
+string to_string(A v){
+	string res = "{";
+	bool f = 0;
+	for(const auto &u: v){
+		if(f){
+			res += ", ";
+		}
+		f = 1;
+		res += to_string(u);
+	}
+	res += "}";
+	return res;
+}
+
+void cus_debug() { cerr << "]" << endl; }
+
 template <typename Head, typename... Tail>
-void debug_out(Head H, Tail... T) {
-  cerr << H << ", ";
-  debug_out(T...);
+void cus_debug(Head H, Tail... T) {
+  cerr << to_string(H) << ", ";
+  cus_debug(T...);
 }
 
 #ifdef _GLIBCXX_DEBUG
-#define debug(x...) cerr << "[" << #x << "]:[", debug_out(x)
+#define debug(x...) cerr << "[" << #x << "]:[", cus_debug(x)
 #else
 #define debug(...) 42
 #endif
 
 void solve(){
 
+	
 }
-
 
 int main()
 {   
