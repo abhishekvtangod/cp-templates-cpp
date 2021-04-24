@@ -5,23 +5,23 @@
 
 struct trie{
 
-	ll tr[1000006][28];
+	int tr[1000006][28];
 
-	ll root = 0;
+	int root = 0;
 
 	void init()
 	{
 		memset(tr,-1,sizeof(tr));
 	}
-	ll nxt = 1;
+	int nxt = 1;
 
 	void insert(string s)
 	{
-		ll node = root;
+		int node = root;
 		
-		for(ll i=0; i<s.size();i++)
+		for(int i=0; i<s.size();i++)
 		{
-			ll q = s[i]-'a';
+			int q = s[i]-'a';
 			
 			if(tr[node][q] == -1)
 			{
@@ -31,20 +31,4 @@ struct trie{
 			node = tr[node][q];
 		}
 	}
-
-
-	void solve()
-	{
-		init();
-		ll n,q;cin>>n>>q;
-		for(ll i=0;i<n;i++)
-		{
-			string s;cin>>s;
-			insert(s);
-		}
-		
-		
-	}
-
-	
-}
+};
