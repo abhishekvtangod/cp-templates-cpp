@@ -1,7 +1,5 @@
-//trie is matrix representation of trie data structure
-
-//trie[k] represents list of links for the k-th node
-//trie[k][m], node which represents son of k-th node using m-th character
+//tr[k] represents list of links for the k-th node
+//tr[k][m], node which represents son of k-th node using m-th character
 
 struct trie{
 

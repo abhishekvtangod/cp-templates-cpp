@@ -35,20 +35,23 @@ void debug_out(Head H, Tail... T) {
 
 struct mod_arithm{
 	// a^b % k
-	ll binary_exp(int a, int b, int k){
+	ll binary_exp(ll a, ll b, ll m){
 		ll ans = 1;
 		while(b){
 			if(b&1){
-				ans = (ans * a) % k;
+				ans = (ans * a) % m;
 			}
 			// b/=2;
 			b = b>>1;
-			a = (a * a) % k;
+			a = (a * a) % m;
 		}
 
 		return ans;
 	}
 
+	ll modInverse(ll n, ll m){
+		return binary_exp(n, k-2, m);
+	}
 
 	
 
