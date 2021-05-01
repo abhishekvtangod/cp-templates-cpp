@@ -50,7 +50,8 @@ struct mod_arithm{
 	}
 
 	ll modInverse(ll n, ll m){
-		return binary_exp(n, k-2, m);
+		// n^m-2 % m
+		return binary_exp(n, m-2, m);
 	}
 
 	
