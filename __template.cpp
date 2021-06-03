@@ -8,7 +8,7 @@ using namespace std;
 
 #define mod 1000000007
 #define gcd(a,b) __gcd(a,b)
-#define lcm(a,b) (a*b)/gcd(a,b)
+#define lcm(a,b) a/gcd(a,b)*b  // no overflow
 #define bits(x) __builtin_popcountll(x)
 #define endl "\n"
 #define IOS ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);

@@ -45,7 +45,6 @@ struct mod_arithm{
 			b = b>>1;
 			a = (a * a) % m;
 		}
-
 		return ans;
 	}
 
@@ -53,6 +52,7 @@ struct mod_arithm{
 		// n^m-2 % m
 		return binary_exp(n, m-2, m);
 	}
+
 
 	
 

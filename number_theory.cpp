@@ -34,17 +34,28 @@ void debug_out(Head H, Tail... T) {
 #endif
 
 struct number_theory{
-	// gcd(x, y) = gcd(x, y%x);
-	int gcd(int x, int y){
-		if(x > y){
-			return gcd(y, x);
+	// gcd(a, b) = gcd(a, b%a) |b > a
+	// gcd(a, b) = gcd(a%b, b) |a > b
+	
+	// => gcd(a, b) = gcd(b, a%b);
+
+	ll gcd(ll a, ll b){
+		while(b){
+			a = a%b;
+			swap(a, b);
 		}
-		if(!x){
-			return y;
-		}
-		return gcd(x, y%x);
+		return a;
 	}
-	// int gcd(int x, int y){
+	// ll gcd(ll x, ll y){
+	// 	if(x > y){
+	// 		return gcd(y, x);
+	// 	}
+	// 	if(!x){
+	// 		return y;
+	// 	}
+	// 	return gcd(x, y%x);
+	// }
+	// ll gcd(ll x, ll y){
 	// 	if(!y){
 	// 		return x;
 	// 	}
