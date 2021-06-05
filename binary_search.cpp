@@ -73,7 +73,7 @@ ll lowerBound(vector<ll> v, ll target){
 		ll mid = l + (r - l)/2;
 		if(target <= v[mid]){
 			ans = mid;
-			r = mid - 1;
+			r = mid - 1; // may be there is even smaller index where target is present
 		}else{
 			l = mid + 1;
 		}
@@ -93,7 +93,7 @@ f f f f f f t  t  t
 target = 6
           l m       r
 0 1 2 3 4 5 6  7    8
-1 3 5 5 5 5 123 123 125
+1 3 5 5 5 5 7 123 125
 f f f f f f t  t  t
 */
 
@@ -112,11 +112,24 @@ ll upperBound(vector<ll> v, ll target){
 			ans = l;
 		}
 	}
+	if(ans >= n){
+		ans = -1;
+	}
 	return ans;
 }
 
-// t t t t f f
-// 4,5,6,7,0,1,
+
+/*
+t t t t f f
+4,5,6,7,0,1
+
+f f f f f f
+0 1 4 5 6 7
+
+t f f f f f f
+8 0 1 4 5 6 7
+
+*/
 
 // returns index of min
 ll findMinRotatedSortedArray(vector<ll> v){
@@ -125,8 +138,12 @@ ll findMinRotatedSortedArray(vector<ll> v){
 	ll l = 0, r= n-1;
 	while(l <= r){
 		ll mid = l + (r - l)/2;
-		
-
+		if(v[mid] <= v[n-1]){
+			ans = mid;
+			r = mid - 1; //try to find even smaller element on it's left
+		} else{
+			l = mid + 1;
+		}
 	}
 	return l;
 }
@@ -150,16 +167,20 @@ ll findMinRotatedSortedArray(vector<ll> v){
 // start of CP 2.0
 void solve(){
 	ll n, x;
-	cin >> n >> x;
-	// cin >> n;
+	// cin >> n >> x;
+	cin >> n;
 	vector<ll> v;
 	for(int i = 0; i < n; i++){
 		ll temp;
 		cin >> temp;
 		v.push_back(temp);
 	}
-	cout << lowerBound(v, x) << endl;
-	cout << upperBound(v, x) << endl;
+	// cout << lowerBound(v, x) << endl;
+	// cout << upperBound(v, x) << endl;
+
+
+	cout << findMinRotatedSortedArray(v) << endl;
+
 }
 
 int main()
