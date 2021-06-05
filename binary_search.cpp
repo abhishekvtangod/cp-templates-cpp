@@ -81,10 +81,27 @@ ll lowerBound(vector<ll> v, ll target){
 	return ans;
 }
 
+/*
+target = 5
+          l m       r
+0 1 2 3 4 5 6  7    8
+1 3 5 5 5 5 67 123 125
+f f f f f f t  t  t
+*/
+
+/*
+target = 6
+          l m       r
+0 1 2 3 4 5 6  7    8
+1 3 5 5 5 5 123 123 125
+f f f f f f t  t  t
+*/
+
+
 // returns index of upper_bound of target
 ll upperBound(vector<ll> v, ll target){
 	ll n = v.size();
-	ll ans = -1;
+	ll ans = 0;
 	ll l = 0, r= n-1;
 	while(l <= r){
 		ll mid = l + (r - l)/2;
@@ -133,16 +150,16 @@ ll findMinRotatedSortedArray(vector<ll> v){
 // start of CP 2.0
 void solve(){
 	ll n, x;
-	// cin >> n >> x;
-	cin >> n;
+	cin >> n >> x;
+	// cin >> n;
 	vector<ll> v;
 	for(int i = 0; i < n; i++){
 		ll temp;
 		cin >> temp;
 		v.push_back(temp);
 	}
-	// cout << lowerBound(v, x) << endl;
-	// cout << upperBound(v, x) << endl;
+	cout << lowerBound(v, x) << endl;
+	cout << upperBound(v, x) << endl;
 }
 
 int main()
