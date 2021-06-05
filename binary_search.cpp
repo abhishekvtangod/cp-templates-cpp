@@ -91,15 +91,27 @@ ll upperBound(vector<ll> v, ll target){
 		if(target < v[mid]){
 			r = mid - 1;
 		}else{
-			ans = mid;
 			l = mid + 1;
+			ans = l;
 		}
 	}
-	return l;
+	return ans;
 }
 
-ll findMinRotatedSortedArray(vector<ll> v, ll target){
+// t t t t f f
+// 4,5,6,7,0,1,
 
+// returns index of min
+ll findMinRotatedSortedArray(vector<ll> v){
+	ll n = v.size();
+	ll ans = -1;
+	ll l = 0, r= n-1;
+	while(l <= r){
+		ll mid = l + (r - l)/2;
+		
+
+	}
+	return l;
 }
 
 // ll searchRotatedArray(vector<ll> v, ll target){
@@ -111,9 +123,9 @@ ll findMinRotatedSortedArray(vector<ll> v, ll target){
 // 	}
 // }
 
-double bsSqrt(ll n){
-	
-}
+// double bsSqrt(ll n){
+
+// }
 
 
 // TTTTFFF
@@ -121,15 +133,16 @@ double bsSqrt(ll n){
 // start of CP 2.0
 void solve(){
 	ll n, x;
-	cin >> n >> x;
+	// cin >> n >> x;
+	cin >> n;
 	vector<ll> v;
 	for(int i = 0; i < n; i++){
 		ll temp;
 		cin >> temp;
 		v.push_back(temp);
 	}
-	cout << lowerBound(v, x) << endl;
-	cout << upperBound(v, x) << endl;
+	// cout << lowerBound(v, x) << endl;
+	// cout << upperBound(v, x) << endl;
 }
 
 int main()
