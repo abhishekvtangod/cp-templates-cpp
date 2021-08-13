@@ -63,8 +63,11 @@ void cus_debug(Head H, Tail... T) {
 #define debug(...) 42
 #endif
 
-void solve(){
 
+
+// start of CP 2.0
+void solve(){
+	
 	
 }
 
