@@ -52,8 +52,11 @@ struct number_theory{
 	// 	return b ? gcd(b, a%b) : a;
 	// }
 
+
+
 	// Extended Euclid Algorithm
 	// ax + by = gcd(a, b)
+
 	ll extendedEuclid(ll a, ll b, ll &x, ll &y){
 		if(!b){
 			x = 1;
@@ -66,6 +69,18 @@ struct number_theory{
 		y = x1 - y1 * (a/b);
 		return d;
 	}
+	int findInitSol(ll a, ll b, ll c, ll &x0, ll &y0){
+		ll g = extendedEuclid(abs(a), abs(b), x0, y0);
+		if(c%g){
+			return 0;
+		}
+		x0 *= c / g;
+		y0 *= c / g;
+		if(a < 0) x0 *= -1;
+		if(b < 0) y0 *= -1;
+		return 1;
+	}
+
 
 	int isprime(int n){
 		if(n <= 1){
