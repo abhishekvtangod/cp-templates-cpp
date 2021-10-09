@@ -34,9 +34,8 @@ void debug_out(Head H, Tail... T) {
 #endif
 
 struct number_theory{
-	// gcd(a, b) = gcd(a, b%a) |b > a
-	// gcd(a, b) = gcd(a%b, b) |a > b
 	
+	// Euclid's Algorithm
 	// => gcd(a, b) = gcd(b, a%b);
 
 	ll gcd(ll a, ll b){
@@ -46,21 +45,27 @@ struct number_theory{
 		}
 		return a;
 	}
-	// ll gcd(ll x, ll y){
-	// 	if(x > y){
-	// 		return gcd(y, x);
-	// 	}
-	// 	if(!x){
-	// 		return y;
-	// 	}
-	// 	return gcd(x, y%x);
+	ll lcm(ll a, ll b){
+		return a / gcd(a, b) * b;
+	}
+	// ll gcd(ll a, ll b){
+	// 	return b ? gcd(b, a%b) : a;
 	// }
-	// ll gcd(ll x, ll y){
-	// 	if(!y){
-	// 		return x;
-	// 	}
-	// 	return gcd(y, x%y);
-	// }
+
+	// Extended Euclid Algorithm
+	// ax + by = gcd(a, b)
+	ll extendedEuclid(ll a, ll b, ll &x, ll &y){
+		if(!b){
+			x = 1;
+			y = 0;
+			return a;
+		}
+		ll x1, y1;
+		ll d = extendedEuclid(b, a%b, x1, y1);
+		x = y1;
+		y = x1 - y1 * (a/b);
+		return d;
+	}
 
 	int isprime(int n){
 		if(n <= 1){
